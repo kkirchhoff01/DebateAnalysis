@@ -1,0 +1,8 @@
+nltk
+nltk stopwords package
+
+To get nltk packages (assuming you have nltk) run python in command line mode and do the following:
+    >>import nltk
+    >>nltk.download()
+
+A package downloader gui will pop up. You can download them all (~3GB) or run analyze_debate.py which will throw an error telling you the package location.

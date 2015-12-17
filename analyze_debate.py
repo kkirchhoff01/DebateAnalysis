@@ -11,9 +11,7 @@ if len(sys.argv) < 2:
     print('No transcript provided')
     sys.exit()
 elif len(sys.argv) == 3:
-    candidate_key = sys.argv[2]
-
-top_words = {}
+    candidate_key = sys.argv[2].lower()
 
 # December 15 debate candidates and moderators
 
@@ -35,6 +33,8 @@ MODERATORS = {
             'bash' : []
             }
 
+topics = []
+
 try:
     fh = open(sys.argv[1], 'r')
 except IOError:
@@ -42,8 +42,9 @@ except IOError:
     sys.exit()
 
 # Parse transcript
+# 'I' seems to be too common, so I took it out
 def parse(data):
-    return [n for n in data if n.lower() not in stopwords.words('english') and n.isalnum()]
+    return [n for n in data if n.lower() not in stopwords.words('english')+[u'I'] and n.isalnum()]
 
 current_speaker = ''
 for line in fh:
@@ -62,6 +63,9 @@ for line in fh:
         pass
     elif len(data) == 2:
         current_speaker = data[0].lower()
+        if current_speaker in MODERATORS.keys():
+            topics += nltk.pos_tag(nltk.word_tokenize(data[1]))
+
         if current_speaker in CANDIDATES.keys():
             if data[1] != '\n':
                 CANDIDATES[current_speaker] = CANDIDATES[current_speaker] + parse(nltk.word_tokenize(data[1]))
@@ -77,16 +81,11 @@ for line in fh:
                 MODERATORS[current_speaker] = MODERATORS[current_speaker] + parse(nltk.word_tokenize(data[0]))
     else:
         pass
+
 fh.close()
 
-
-common_terms = {}
-# Create word list
-for person in CANDIDATES.keys():
-    fdist = nltk.FreqDist(CANDIDATES[person])
-    common_terms[person] = fdist
-
 # Print sorted words
-#for key in CANDIDATES.keys():
+
 if candidate_key in CANDIDATES.keys():
-    common_terms[candidate_key].plot(25, cumulative=False, title=candidate_key)
+    fdist = nltk.FreqDist(CANDIDATES[candidate_key])
+    fdist.plot(25, cumulative=False, title=candidate_key)

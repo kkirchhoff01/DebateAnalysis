@@ -1,2 +1,2 @@
 # DebateAnalysis
-This program takes in the transcript of a debate (assuming the format is [name]: [statement]) and parses it to produce a plot of the most used non-common terms that the given candidate used.
+This goal of this project is to analyze the 2016 republican debates for machine learning purposes.
